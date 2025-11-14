@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TConstructorIngredient } from '../utils/types';
+import { makeOrderFetch } from './makeOrder-slice';
 
 type ConstructorState = {
   bun: TConstructorIngredient | null;
@@ -36,15 +37,17 @@ const burgerMakeSlice = createSlice({
       const { fromIndex, toIndex } = action.payload;
       const [moved] = state.ingredients.splice(fromIndex, 1);
       state.ingredients.splice(toIndex, 0, moved);
-    },
-    clearMaker: (state) => {
+    }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(makeOrderFetch.fulfilled, (state) => {
       state.bun = null;
       state.ingredients = [];
-    }
+    });
   }
 });
 
-export const { addIngredient, removeIngredient, moveIngredient, clearMaker } =
+export const { addIngredient, removeIngredient, moveIngredient } =
   burgerMakeSlice.actions;
 
 export const burgerMakeReducer = burgerMakeSlice.reducer;

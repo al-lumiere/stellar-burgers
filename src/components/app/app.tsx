@@ -20,12 +20,17 @@ import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from '../../services/store';
 import { useEffect } from 'react';
 import { userGet } from '../../slices/user-slice';
+import { useMatch } from 'react-router-dom';
 
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const background = location.state?.background;
+
+  const profileMatch = useMatch('/profile/orders/:number');
+  const feedMatch = useMatch('/feed/:number');
+  const orderNumber = profileMatch?.params.number || feedMatch?.params.number;
 
   useEffect(() => {
     dispatch(userGet());
@@ -97,7 +102,10 @@ function App() {
             <Route
               path='/feed/:number'
               element={
-                <Modal title='Информация о заказе' onClose={handleCloseModal}>
+                <Modal
+                  title={`#${orderNumber && orderNumber.padStart(6, '0')}`}
+                  onClose={handleCloseModal}
+                >
                   <OrderInfo />
                 </Modal>
               }
@@ -113,7 +121,10 @@ function App() {
             <Route
               path='/profile/orders/:number'
               element={
-                <Modal title='Информация о заказе' onClose={handleCloseModal}>
+                <Modal
+                  title={`#${orderNumber && orderNumber.padStart(6, '0')}`}
+                  onClose={handleCloseModal}
+                >
                   <OrderInfo />
                 </Modal>
               }

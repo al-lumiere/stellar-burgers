@@ -10,7 +10,7 @@ import {
   TRegisterData
 } from '@api';
 import { TUser } from '../utils/types';
-import { setCookie } from '../utils/cookie';
+import { saveTokens, clearTokens } from '../utils/auth';
 
 type UserState = {
   user: TUser | null;
@@ -28,29 +28,45 @@ const initialState: UserState = {
   error: null
 };
 
-export const userRegister = createAsyncThunk(
-  'user/registare',
-  async (info: { email: string; name: string; password: string }) => {
+export const userRegister = createAsyncThunk<
+  TUser,
+  { email: string; name: string; password: string },
+  { rejectValue: string }
+>('user/register', async (info, { rejectWithValue }) => {
+  try {
     const data = await registerUserApi(info);
-    return data as unknown as {
+    const { accessToken, refreshToken, user } = data as {
       accessToken: string;
       refreshToken: string;
       user: TUser;
     };
-  }
-);
 
-export const userLogin = createAsyncThunk(
-  'user/login',
-  async (info: { email: string; password: string }) => {
+    saveTokens(accessToken, refreshToken);
+    return user;
+  } catch (e) {
+    return rejectWithValue('Ошибка регистрации');
+  }
+});
+
+export const userLogin = createAsyncThunk<
+  TUser,
+  { email: string; password: string },
+  { rejectValue: string }
+>('user/login', async (info, { rejectWithValue }) => {
+  try {
     const data = await loginUserApi(info);
-    return data as unknown as {
+    const { accessToken, refreshToken, user } = data as {
       accessToken: string;
       refreshToken: string;
       user: TUser;
     };
+
+    saveTokens(accessToken, refreshToken);
+    return user;
+  } catch (e) {
+    return rejectWithValue('Ошибка входа');
   }
-);
+});
 
 export const userGet = createAsyncThunk(
   'user/get',
@@ -72,9 +88,18 @@ export const userUpdate = createAsyncThunk(
   }
 );
 
-export const userLogout = createAsyncThunk('user/logout', async () => {
-  await logoutApi();
-});
+export const userLogout = createAsyncThunk<void, void, { rejectValue: string }>(
+  'user/logout',
+  async (_, { rejectWithValue }) => {
+    try {
+      await logoutApi();
+    } catch (e) {
+      return rejectWithValue('Ошибка выхода');
+    } finally {
+      clearTokens();
+    }
+  }
+);
 
 export const userForgot = createAsyncThunk(
   'user/forgot',
@@ -106,22 +131,11 @@ const userSlice = createSlice({
       })
       .addCase(
         userRegister.fulfilled,
-        (
-          state,
-          action: PayloadAction<{
-            accessToken: string;
-            refreshToken: string;
-            user: TUser;
-          }>
-        ) => {
+        (state, action: PayloadAction<TUser>) => {
           state.isLoading = false;
-          state.user = action.payload.user;
+          state.user = action.payload;
           state.isAuthenticated = true;
           state.isAuthChecked = true;
-          const raw = action.payload.accessToken || '';
-          const token = raw.startsWith('Bearer ') ? raw.slice(7) : raw;
-          setCookie('accessToken', token, { path: '/' });
-          localStorage.setItem('refreshToken', action.payload.refreshToken);
         }
       )
       .addCase(userRegister.rejected, (state, action) => {
@@ -136,26 +150,12 @@ const userSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(
-        userLogin.fulfilled,
-        (
-          state,
-          action: PayloadAction<{
-            accessToken: string;
-            refreshToken: string;
-            user: TUser;
-          }>
-        ) => {
-          state.isLoading = false;
-          state.user = action.payload.user;
-          state.isAuthenticated = true;
-          state.isAuthChecked = true;
-          const raw = action.payload.accessToken || '';
-          const token = raw.startsWith('Bearer ') ? raw.slice(7) : raw;
-          setCookie('accessToken', token, { path: '/' });
-          localStorage.setItem('refreshToken', action.payload.refreshToken);
-        }
-      )
+      .addCase(userLogin.fulfilled, (state, action: PayloadAction<TUser>) => {
+        state.isLoading = false;
+        state.user = action.payload;
+        state.isAuthenticated = true;
+        state.isAuthChecked = true;
+      })
       .addCase(userLogin.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || 'Ошибка входа';
@@ -203,8 +203,6 @@ const userSlice = createSlice({
       })
       .addCase(userLogout.fulfilled, (state) => {
         state.isLoading = false;
-        setCookie('accessToken', '', { 'max-age': -1, path: '/' });
-        localStorage.removeItem('refreshToken');
         state.user = null;
         state.isAuthenticated = false;
         state.isAuthChecked = true;
@@ -212,6 +210,9 @@ const userSlice = createSlice({
       .addCase(userLogout.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || 'Ошибка выхода';
+        state.user = null;
+        state.isAuthenticated = false;
+        state.isAuthChecked = true;
       });
 
     builder
