@@ -1,52 +1,74 @@
-import { FC } from 'react';
+import { FC, useMemo, useEffect } from 'react';
+import { Preloader } from '../ui/preloader';
+import { OrderInfoUI } from '../ui/order-info';
+import { TIngredient } from '@utils-types';
+import { useParams } from 'react-router-dom';
 
-export const OrderInfo: FC = () =>
-  /* Готовим данные для отображения */
-  // const orderInfo = useMemo(() => {
-  //   if (!orderData || !ingredients.length) return null;
+import { useSelector, useDispatch } from '../../services/store';
+import { clearInfoOrder, infoOrderFetch } from '../../slices/infoOrder-slice';
 
-  //   const date = new Date(orderData.createdAt);
+export const OrderInfo: FC = () => {
+  const { number } = useParams<{ number: string }>();
+  const dispatch = useDispatch();
 
-  //   type TIngredientsWithCount = {
-  //     [key: string]: TIngredient & { count: number };
-  //   };
+  const { order: orderData, isLoading: orderRequest } = useSelector(
+    (state) => state.infoOrder
+  );
 
-  //   const ingredientsInfo = orderData.ingredients.reduce(
-  //     (acc: TIngredientsWithCount, item) => {
-  //       if (!acc[item]) {
-  //         const ingredient = ingredients.find((ing) => ing._id === item);
-  //         if (ingredient) {
-  //           acc[item] = {
-  //             ...ingredient,
-  //             count: 1
-  //           };
-  //         }
-  //       } else {
-  //         acc[item].count++;
-  //       }
+  const { ingredients } = useSelector((state) => state.ingredients);
 
-  //       return acc;
-  //     },
-  //     {}
-  //   );
+  useEffect(() => {
+    if (!number) return;
+    dispatch(infoOrderFetch(Number(number)));
+    return () => {
+      dispatch(clearInfoOrder());
+    };
+  }, [dispatch, number]);
 
-  //   const total = Object.values(ingredientsInfo).reduce(
-  //     (acc, item) => acc + item.price * item.count,
-  //     0
-  //   );
+  const orderInfo = useMemo(() => {
+    if (!orderData || !ingredients.length) return null;
 
-  //   return {
-  //     ...orderData,
-  //     ingredientsInfo,
-  //     date,
-  //     total
-  //   };
-  // }, [orderData, ingredients]);
+    const date = new Date(orderData.createdAt);
 
-  // if (!orderInfo) {
-  //   return <Preloader />;
-  // }
+    type TIngredientsWithCount = {
+      [key: string]: TIngredient & { count: number };
+    };
 
-  // return <OrderInfoUI orderInfo={orderInfo} />;
+    const ingredientsInfo = orderData.ingredients.reduce(
+      (acc: TIngredientsWithCount, item) => {
+        if (!acc[item]) {
+          const ingredient = ingredients.find((ing) => ing._id === item);
+          if (ingredient) {
+            acc[item] = {
+              ...ingredient,
+              count: 1
+            };
+          }
+        } else {
+          acc[item].count++;
+        }
 
-  null;
+        return acc;
+      },
+      {}
+    );
+
+    const total = Object.values(ingredientsInfo).reduce(
+      (acc, item) => acc + item.price * item.count,
+      0
+    );
+
+    return {
+      ...orderData,
+      ingredientsInfo,
+      date,
+      total
+    };
+  }, [orderData, ingredients]);
+
+  if (!orderInfo) {
+    return <Preloader />;
+  }
+
+  return <OrderInfoUI orderInfo={orderInfo} />;
+};
