@@ -9,8 +9,8 @@ import {
   resetPasswordApi,
   TRegisterData
 } from '@api';
-import { TUser } from '../utils/types';
-import { saveTokens, clearTokens } from '../utils/auth';
+import { TUser } from '../../utils/types';
+import { saveTokens, clearTokens } from '../../utils/auth';
 
 type UserState = {
   user: TUser | null;
@@ -20,7 +20,7 @@ type UserState = {
   error: string | null;
 };
 
-const initialState: UserState = {
+export const initialState: UserState = {
   user: null,
   isAuthChecked: false,
   isAuthenticated: false,

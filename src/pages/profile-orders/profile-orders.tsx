@@ -3,7 +3,7 @@ import { FC, useEffect } from 'react';
 import { Preloader } from '@ui';
 
 import { useSelector, useDispatch } from '../../services/store';
-import { fetchOrders } from '../../slices/orders-slice';
+import { fetchOrders } from '../../slices/orders-slice/orders-slice';
 
 export const ProfileOrders: FC = () => {
   const dispatch = useDispatch();

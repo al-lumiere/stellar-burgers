@@ -21,7 +21,7 @@ type infoOrderState = {
   error: string | null;
 };
 
-const initialState: infoOrderState = {
+export const initialState: infoOrderState = {
   order: null,
   isLoading: false,
   error: null

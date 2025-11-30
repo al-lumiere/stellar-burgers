@@ -21,7 +21,7 @@ type makeOrderState = {
   error: string | null;
 };
 
-const initialState: makeOrderState = {
+export const initialState: makeOrderState = {
   order: null,
   isLoading: false,
   error: null

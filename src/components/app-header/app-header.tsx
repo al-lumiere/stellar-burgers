@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { AppHeaderUI } from '@ui';
 
-import { userGet } from '../../slices/user-slice';
+import { userGet } from '../../slices/user-slice/user-slice';
 import { useSelector, useDispatch } from '../../services/store';
 
 export const AppHeader: FC = () => {

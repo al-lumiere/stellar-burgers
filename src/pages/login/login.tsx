@@ -1,6 +1,6 @@
 import { FC, SyntheticEvent, useState, useEffect } from 'react';
 import { LoginUI } from '@ui-pages';
-import { userLogin } from '../../slices/user-slice';
+import { userLogin } from '../../slices/user-slice/user-slice';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from '../../services/store';
 

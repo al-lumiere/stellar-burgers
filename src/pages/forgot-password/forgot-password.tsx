@@ -1,6 +1,6 @@
 import { FC, useState, SyntheticEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { userForgot } from '../../slices/user-slice';
+import { userForgot } from '../../slices/user-slice/user-slice';
 import { useSelector, useDispatch } from '../../services/store';
 
 import { ForgotPasswordUI } from '@ui-pages';
