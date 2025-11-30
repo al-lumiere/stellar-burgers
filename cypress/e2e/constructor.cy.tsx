@@ -67,6 +67,14 @@ describe('Modal', () => {
     cy.get('[data-cy=modal-overlay]').click({ force: true });
     cy.get('[data-cy=modal]').should('not.exist');
   });
+
+  it('close by esc', () => {
+    cy.contains('[data-cy=ingredient-card]', 'Краторная булка N-200i').click();
+    cy.get('[data-cy=modal]').should('be.visible');
+
+    cy.get('body').type('{esc}');
+    cy.get('[data-cy=modal]').should('not.exist');
+  });
 });
 
 describe('Make Order', () => {
@@ -90,8 +98,12 @@ describe('Make Order', () => {
       }
     });
 
-    cy.wait('@getIngredients');
-    cy.wait('@getUser');
+    cy.wait(['@getIngredients', '@getUser']);
+  });
+
+  afterEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
   });
 
   it('make burger and order', () => {
