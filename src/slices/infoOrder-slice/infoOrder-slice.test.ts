@@ -5,20 +5,7 @@ import {
   clearInfoOrder
 } from './infoOrder-slice';
 import { test, describe, expect } from '@jest/globals';
-
-const ord = {
-  order: {
-    _id: '1',
-    status: 'Ready',
-    name: '',
-    createdAt: '',
-    updatedAt: '',
-    number: 1,
-    ingredients: []
-  },
-  isLoading: false,
-  error: null
-};
+import { ord } from '../mocks';
 
 describe('infoOrder-slice', () => {
   test('pending', () => {

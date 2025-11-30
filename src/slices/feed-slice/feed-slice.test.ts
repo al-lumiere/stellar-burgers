@@ -4,24 +4,7 @@ import {
   fetchFeed
 } from './feed-slice';
 import { test, describe, expect } from '@jest/globals';
-
-const ord = {
-  orders: [
-    {
-      _id: '1',
-      status: 'Ready',
-      name: '',
-      createdAt: '',
-      updatedAt: '',
-      number: 1,
-      ingredients: []
-    }
-  ],
-  total: 10,
-  totalToday: 5,
-  isLoading: false,
-  error: null
-};
+import { orders } from '../mocks';
 
 describe('feed-slice', () => {
   test('pending', () => {
@@ -38,12 +21,12 @@ describe('feed-slice', () => {
     };
     const state = feedReducer(stateBefore, {
       type: fetchFeed.fulfilled.type,
-      payload: ord
+      payload: orders
     });
     expect(state.isLoading).toBe(false);
-    expect(state.orders).toEqual(ord.orders);
-    expect(state.total).toEqual(ord.total);
-    expect(state.totalToday).toEqual(ord.totalToday);
+    expect(state.orders).toEqual(orders.orders);
+    expect(state.total).toEqual(orders.total);
+    expect(state.totalToday).toEqual(orders.totalToday);
   });
 
   test('rejected', () => {

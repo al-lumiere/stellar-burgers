@@ -4,22 +4,7 @@ import {
   fetchOrders
 } from './orders-slice';
 import { test, describe, expect } from '@jest/globals';
-
-const ord = {
-  orders: [
-    {
-      _id: '1',
-      status: 'Ready',
-      name: '',
-      createdAt: '',
-      updatedAt: '',
-      number: 1,
-      ingredients: []
-    }
-  ],
-  isLoading: false,
-  error: null
-};
+import { orders } from '../mocks'
 
 describe('orders-slice', () => {
   test('pending', () => {
@@ -36,10 +21,10 @@ describe('orders-slice', () => {
     };
     const state = ordersReducer(stateBefore, {
       type: fetchOrders.fulfilled.type,
-      payload: ord.orders
+      payload: orders.orders
     });
     expect(state.isLoading).toBe(false);
-    expect(state.orders).toEqual(ord.orders);
+    expect(state.orders).toEqual(orders.orders);
   });
 
   test('rejected', () => {

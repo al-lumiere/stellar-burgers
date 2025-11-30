@@ -4,23 +4,7 @@ import {
   fetchIngredients
 } from './ingredients-slice';
 import { test, describe, expect } from '@jest/globals';
-
-const ing = [
-  {
-    _id: '1',
-    id: '1',
-    name: 'First',
-    type: 'sauce',
-    proteins: 1,
-    fat: 1,
-    carbohydrates: 1,
-    calories: 1,
-    price: 1,
-    image: '',
-    image_large: '',
-    image_mobile: ''
-  }
-];
+import { ingredients } from '../mocks';
 
 describe('ingredients-slice', () => {
   test('pending', () => {
@@ -37,10 +21,10 @@ describe('ingredients-slice', () => {
     };
     const state = ingredientsReducer(stateBefore, {
       type: fetchIngredients.fulfilled.type,
-      payload: ing
+      payload: ingredients
     });
     expect(state.isLoading).toBe(false);
-    expect(state.ingredients).toEqual(ing);
+    expect(state.ingredients).toEqual(ingredients);
   });
 
   test('rejected', () => {

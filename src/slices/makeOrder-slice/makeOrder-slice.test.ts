@@ -5,20 +5,7 @@ import {
   clearOrder
 } from './makeOrder-slice';
 import { test, describe, expect } from '@jest/globals';
-
-const ord = {
-  order: {
-    _id: '1',
-    status: 'Ready',
-    name: '',
-    createdAt: '',
-    updatedAt: '',
-    number: 1,
-    ingredients: []
-  },
-  isLoading: false,
-  error: null
-};
+import { ord } from '../mocks';
 
 describe('makeOrder-slice', () => {
   test('pending', () => {
@@ -58,17 +45,7 @@ describe('makeOrder-slice', () => {
   test('action clearOrder', () => {
     const stateBefore = {
       ...MakeOrderInState,
-      order: {
-        _id: '1',
-        status: 'Ready',
-        name: '',
-        createdAt: '',
-        updatedAt: '',
-        number: 1,
-        ingredients: []
-      },
-      isLoading: false,
-      error: null
+      order: ord.order
     };
 
     const state = makeOrderReducer(stateBefore, clearOrder());

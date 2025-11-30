@@ -10,11 +10,7 @@ import {
   userReset
 } from './user-slice';
 import { test, describe, expect } from '@jest/globals';
-
-const us = {
-  email: 'al@gmail.com',
-  name: 'Alex'
-};
+import { us } from '../mocks';
 
 describe('makeOrder-slice', () => {
   describe('userRegister', () => {
