@@ -5,7 +5,10 @@ import { TIngredient } from '@utils-types';
 import { useParams } from 'react-router-dom';
 
 import { useSelector, useDispatch } from '../../services/store';
-import { clearInfoOrder, infoOrderFetch } from '../../slices/infoOrder-slice';
+import {
+  clearInfoOrder,
+  infoOrderFetch
+} from '../../slices/infoOrder-slice/infoOrder-slice';
 
 export const OrderInfo: FC = () => {
   const { number } = useParams<{ number: string }>();

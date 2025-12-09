@@ -1,6 +1,6 @@
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { userReset } from '../../slices/user-slice';
+import { userReset } from '../../slices/user-slice/user-slice';
 import { useSelector, useDispatch } from '../../services/store';
 
 import { ResetPasswordUI } from '@ui-pages';

@@ -19,7 +19,7 @@ import {
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from '../../services/store';
 import { useEffect } from 'react';
-import { userGet } from '../../slices/user-slice';
+import { userGet } from '../../slices/user-slice/user-slice';
 import { useMatch } from 'react-router-dom';
 
 function App() {
